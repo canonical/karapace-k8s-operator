@@ -91,7 +91,7 @@ class KarapaceCharm(TypedCharmBase[CharmConfig]):
 
     def _on_install(self, event: ops.InstallEvent):
         """Handle install event."""
-        if not self.unit.get_container(CONTAINER).can_connect():
+        if not self.workload.container_can_connect():
             event.defer()
             return
 

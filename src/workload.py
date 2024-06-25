@@ -40,7 +40,7 @@ class KarapaceWorkload(WorkloadBase):
 
     @override
     def read(self, path: str) -> list[str]:
-        if not self.container.exists(path):
+        if not self.container_can_connect() or not self.container.exists(path):
             return []
         else:
             with self.container.pull(path) as f:
