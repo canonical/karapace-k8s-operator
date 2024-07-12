@@ -34,8 +34,6 @@ containers:
 peers:
   cluster:
     interface: cluster
-  restart:
-    interface: rolling_op
 
 requires:
   kafka:
