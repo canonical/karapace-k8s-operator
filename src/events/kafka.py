@@ -51,7 +51,7 @@ class KafkaHandler(Object):
     def _on_kafka_topic_created(self, _: TopicCreatedEvent) -> None:
         """Handle the topic created event."""
         self.charm.config_manager.generate_config()
-        self.charm.workload.start(layer=self.charm.karapace_layer)
+        self.charm.workload.start()
 
         # Checks to ensure charm status gets set and there are no config options missing
         self.charm.on.config_changed.emit()

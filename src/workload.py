@@ -8,11 +8,12 @@ import logging
 import re
 
 from ops import Container
-from ops.pebble import ExecError, Layer
+from ops.pebble import ExecError, Layer, LayerDict
 from tenacity import retry, retry_if_result, stop_after_attempt, wait_fixed
 from typing_extensions import override
 
 from core.workload import WorkloadBase
+from literals import CONTAINER, GROUP, USER
 
 logger = logging.getLogger(__name__)
 
@@ -26,8 +27,8 @@ class KarapaceWorkload(WorkloadBase):
         self.container = container
 
     @override
-    def start(self, layer: Layer) -> None:
-        self.container.add_layer(self.CONTAINER_SERVICE, layer, combine=True)
+    def start(self) -> None:
+        self.container.add_layer(self.CONTAINER_SERVICE, self._karapace_layer, combine=True)
         self.container.replan()
 
     @override
@@ -99,3 +100,24 @@ class KarapaceWorkload(WorkloadBase):
     def container_can_connect(self) -> bool:
         """Check if karapace container is available."""
         return self.container.can_connect()
+
+    @property
+    def _karapace_layer(self) -> Layer:
+        """Returns a Pebble configuration layer for Karapace."""
+        command = f"karapace {self.paths.karapace_config}"
+
+        layer_config: LayerDict = {
+            "summary": "karapace layer",
+            "description": "Pebble config layer for karapace",
+            "services": {
+                CONTAINER: {
+                    "override": "replace",
+                    "summary": "karapace",
+                    "command": command,
+                    "startup": "enabled",
+                    "user": USER,
+                    "group": GROUP,
+                }
+            },
+        }
+        return Layer(layer_config)

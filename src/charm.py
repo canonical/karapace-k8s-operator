@@ -9,7 +9,6 @@ import logging
 import ops
 from charms.data_platform_libs.v0.data_models import TypedCharmBase
 from charms.rolling_ops.v0.rollingops import RollingOpsManager
-from ops.pebble import Layer, LayerDict
 
 from core.cluster import ClusterContext
 from core.structured_config import CharmConfig
@@ -17,7 +16,7 @@ from events.kafka import KafkaHandler
 from events.password_actions import PasswordActionEvents
 from events.provider import KarapaceHandler
 from events.tls import TLSHandler
-from literals import CHARM_KEY, CONTAINER, GROUP, USER, DebugLevel, Status, Substrate
+from literals import CHARM_KEY, CONTAINER, DebugLevel, Status, Substrate
 from managers.auth import KarapaceAuth
 from managers.config import ConfigManager
 from managers.kafka import KafkaManager
@@ -61,33 +60,11 @@ class KarapaceCharm(TypedCharmBase[CharmConfig]):
         # CORE EVENTS
 
         self.framework.observe(self.on.install, self._on_install)
-        # self.framework.observe(self.on.start, self._on_start)
         self.framework.observe(
             getattr(self.on, "karapace_pebble_ready"), self._on_karapace_pebble_ready
         )
         self.framework.observe(self.on.config_changed, self._on_config_changed)
         self.framework.observe(self.on.update_status, self._on_update_status)
-
-    @property
-    def karapace_layer(self) -> Layer:
-        """Returns a Pebble configuration layer for Karapace."""
-        command = f"karapace {self.workload.paths.karapace_config}"
-
-        layer_config: LayerDict = {
-            "summary": "karapace layer",
-            "description": "Pebble config layer for karapace",
-            "services": {
-                CONTAINER: {
-                    "override": "replace",
-                    "summary": "karapace",
-                    "command": command,
-                    "startup": "enabled",
-                    "user": USER,
-                    "group": GROUP,
-                }
-            },
-        }
-        return Layer(layer_config)
 
     def _on_install(self, event: ops.InstallEvent):
         """Handle install event."""
@@ -96,10 +73,6 @@ class KarapaceCharm(TypedCharmBase[CharmConfig]):
             return
 
         self.unit.set_workload_version(self.workload.get_version())
-
-    # def _on_start(self, event: ops.EventBase):
-    #     """Handle start event."""
-    #     self._on_karapace_pebble_ready(event)
 
     def _on_karapace_pebble_ready(self, event: ops.EventBase) -> None:
         """Handle pebble ready event."""
