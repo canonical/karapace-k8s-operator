@@ -13,7 +13,7 @@ from tenacity import retry, retry_if_result, stop_after_attempt, wait_fixed
 from typing_extensions import override
 
 from core.workload import WorkloadBase
-from literals import CONTAINER, GROUP, USER
+from literals import CONTAINER, GROUP, SALT, USER
 
 logger = logging.getLogger(__name__)
 
@@ -95,7 +95,7 @@ class KarapaceWorkload(WorkloadBase):
 
     @override
     def mkpasswd(self, username: str, password: str) -> str:
-        return self.exec(command=f"karapace_mkpasswd -u {username} -a sha512 {password}")
+        return self.exec(command=f"karapace_mkpasswd -u {username} -a sha512 {password} {SALT}")
 
     def container_can_connect(self) -> bool:
         """Check if karapace container is available."""
