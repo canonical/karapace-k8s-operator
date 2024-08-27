@@ -149,7 +149,9 @@ def test_config_changed_succeeds(
     kafka_relation,
     patched_workload_write,
     patched_restart,
+    patched_exec,
 ):
+    patched_exec.side_effect = patched_exec_side_effects
     state_in = State(
         containers=[karapace_container], relations=[peer_relation, kafka_relation], leader=True
     )
@@ -193,7 +195,9 @@ def test_update_status_succeeds(
     kafka_relation,
     patched_workload_write,
     patched_restart,
+    patched_exec,
 ):
+    patched_exec.side_effect = patched_exec_side_effects
     state_in = State(
         containers=[karapace_container], relations=[peer_relation, kafka_relation], leader=True
     )
