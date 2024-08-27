@@ -35,7 +35,7 @@ async def test_build_and_deploy(ops_test: OpsTest, karapace_charm, app_charm):
             resources={"karapace-image": KARAPACE_CONTAINER},
         ),
         ops_test.model.deploy(ZOOKEEPER, channel="3/edge", application_name=ZOOKEEPER),
-        ops_test.model.deploy(KAFKA, channel="3/edge", application_name=KAFKA),
+        ops_test.model.deploy(KAFKA, channel="3/edge", application_name=KAFKA, trust=True),
         ops_test.model.deploy(app_charm, application_name=DUMMY_NAME, num_units=1),
     )
 
@@ -110,4 +110,4 @@ async def test_scaling_karapace_with_requirer(ops_test: OpsTest):
     result = check_output(command, stderr=PIPE, shell=True, universal_newlines=True)
     assert '{"id":1}' in result
 
-    await assert_list_schemas(ops_test, expected_schemas='["other-key","second-key"]')
+    await assert_list_schemas(ops_test, expected_schemas='["other-key","second-key"]', units=3)

@@ -13,7 +13,6 @@ from ops.model import ActiveStatus, BlockedStatus, MaintenanceStatus, StatusBase
 CHARM_KEY = "karapace"
 CONTAINER = "karapace"
 PORT = 8081
-REPLICATION_PORT = 8082
 
 PEER = "cluster"
 KARAPACE_REL = "karapace"
