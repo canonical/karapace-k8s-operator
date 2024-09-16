@@ -33,7 +33,7 @@ async def test_deploy_tls(ops_test: OpsTest, karapace_charm):
         ops_test.model.deploy(TLS_NAME, channel="edge", revision=163, config=tls_config),
     )
     await ops_test.model.wait_for_idle(
-        apps=[APP_NAME, ZOOKEEPER, KAFKA, TLS_NAME], idle_period=15, timeout=1800
+        apps=[APP_NAME, ZOOKEEPER, KAFKA, TLS_NAME], idle_period=30, timeout=1800
     )
 
     assert ops_test.model.applications[APP_NAME].status == "blocked"
