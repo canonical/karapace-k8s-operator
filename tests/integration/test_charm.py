@@ -50,7 +50,9 @@ async def test_integrate_kafka(ops_test: OpsTest):
     await ops_test.model.wait_for_idle(apps=[ZOOKEEPER, KAFKA], idle_period=30, timeout=3600)
 
     await ops_test.model.add_relation(KAFKA, ZOOKEEPER)
-    await ops_test.model.wait_for_idle(apps=[KAFKA, ZOOKEEPER])
+    await ops_test.model.wait_for_idle(
+        apps=[KAFKA, ZOOKEEPER], idle_period=30, timeout=1800, status="active"
+    )
 
     assert ops_test.model.applications[KAFKA].status == "active"
     assert ops_test.model.applications[ZOOKEEPER].status == "active"
