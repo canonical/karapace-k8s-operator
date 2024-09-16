@@ -28,7 +28,7 @@ async def test_deploy_tls(ops_test: OpsTest, karapace_charm):
             resources={"karapace-image": KARAPACE_CONTAINER},
         ),
         ops_test.model.deploy(ZOOKEEPER, channel="3/edge", application_name=ZOOKEEPER),
-        ops_test.model.deploy(KAFKA, channel="3/edge", application_name=KAFKA, trust=True),
+        ops_test.model.deploy(KAFKA, channel="3/edge", application_name=KAFKA),
         ops_test.model.deploy(
             TLS_NAME, channel="edge", config=tls_config, series="jammy", revision=163
         ),

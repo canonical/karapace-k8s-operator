@@ -45,7 +45,7 @@ async def test_integrate_kafka(ops_test: OpsTest):
     """Integrate charm with Kafka."""
     await asyncio.gather(
         ops_test.model.deploy(ZOOKEEPER, channel="3/edge", application_name=ZOOKEEPER),
-        ops_test.model.deploy(KAFKA, channel="3/edge", application_name=KAFKA, trust=True),
+        ops_test.model.deploy(KAFKA, channel="3/edge", application_name=KAFKA),
     )
     await ops_test.model.wait_for_idle(apps=[ZOOKEEPER, KAFKA], idle_period=30, timeout=3600)
 

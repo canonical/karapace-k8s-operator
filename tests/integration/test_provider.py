@@ -35,7 +35,7 @@ async def test_build_and_deploy(ops_test: OpsTest, karapace_charm, app_charm):
             resources={"karapace-image": KARAPACE_CONTAINER},
         ),
         ops_test.model.deploy(ZOOKEEPER, channel="3/edge", application_name=ZOOKEEPER),
-        ops_test.model.deploy(KAFKA, channel="3/edge", application_name=KAFKA, trust=True),
+        ops_test.model.deploy(KAFKA, channel="3/edge", application_name=KAFKA),
         ops_test.model.deploy(app_charm, application_name=DUMMY_NAME, num_units=1),
     )
 
