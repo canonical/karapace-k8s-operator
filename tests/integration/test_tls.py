@@ -29,10 +29,12 @@ async def test_deploy_tls(ops_test: OpsTest, karapace_charm):
         ),
         ops_test.model.deploy(ZOOKEEPER, channel="3/edge", application_name=ZOOKEEPER),
         ops_test.model.deploy(KAFKA, channel="3/edge", application_name=KAFKA),
-        ops_test.model.deploy(TLS_NAME, channel="edge", config=tls_config),
+        ops_test.model.deploy(
+            TLS_NAME, channel="edge", config=tls_config, series="jammy", revision=163
+        ),
     )
     await ops_test.model.wait_for_idle(
-        apps=[APP_NAME, ZOOKEEPER, KAFKA, TLS_NAME], idle_period=15, timeout=1800
+        apps=[APP_NAME, ZOOKEEPER, KAFKA, TLS_NAME], idle_period=30, timeout=1800
     )
 
     assert ops_test.model.applications[APP_NAME].status == "blocked"
@@ -44,7 +46,9 @@ async def test_deploy_tls(ops_test: OpsTest, karapace_charm):
     await ops_test.model.add_relation(KAFKA, ZOOKEEPER)
     await ops_test.model.add_relation(TLS_NAME, ZOOKEEPER)
     await ops_test.model.add_relation(TLS_NAME, f"{KAFKA}:certificates")
-    await ops_test.model.wait_for_idle(apps=[TLS_NAME, ZOOKEEPER, KAFKA], idle_period=15)
+    await ops_test.model.wait_for_idle(
+        apps=[TLS_NAME, ZOOKEEPER, KAFKA], idle_period=30, timeout=1800, status="active"
+    )
 
     assert ops_test.model.applications[TLS_NAME].status == "active"
     assert ops_test.model.applications[ZOOKEEPER].status == "active"

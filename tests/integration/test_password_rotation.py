@@ -34,13 +34,15 @@ async def test_build_and_deploy(ops_test: OpsTest, karapace_charm):
     )
 
     await ops_test.model.add_relation(KAFKA, ZOOKEEPER)
-    await ops_test.model.wait_for_idle(apps=[KAFKA, ZOOKEEPER])
+    await ops_test.model.wait_for_idle(
+        apps=[KAFKA, ZOOKEEPER], idle_period=30, timeout=3600, status="active"
+    )
 
     assert ops_test.model.applications[KAFKA].status == "active"
     assert ops_test.model.applications[ZOOKEEPER].status == "active"
 
     await ops_test.model.add_relation(KAFKA, APP_NAME)
-    await ops_test.model.wait_for_idle(apps=[KAFKA, APP_NAME])
+    await ops_test.model.wait_for_idle(apps=[KAFKA, APP_NAME], idle_period=30, timeout=1800)
 
     assert ops_test.model.applications[APP_NAME].status == "active"
 
