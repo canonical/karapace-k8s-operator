@@ -983,12 +983,32 @@ files = [
 ]
 
 [package.dependencies]
+ops-scenario = {version = ">=7.0.5,<8", optional = true, markers = "extra == \"testing\""}
 PyYAML = "==6.*"
 websocket-client = "==1.*"
 
 [package.extras]
 docs = ["canonical-sphinx-extensions", "furo", "linkify-it-py", "myst-parser", "ops-scenario (>=7.0.5,<8)", "pyspelling", "sphinx (>=8.0.0,<8.1.0)", "sphinx-autobuild", "sphinx-copybutton", "sphinx-design", "sphinx-notfound-page", "sphinx-tabs", "sphinxcontrib-jquery", "sphinxext-opengraph"]
 testing = ["ops-scenario (>=7.0.5,<8)"]
+
+[[package]]
+name = "ops-scenario"
+version = "7.0.5"
+description = "Python library providing a state-transition testing API for Operator Framework charms."
+optional = false
+python-versions = ">=3.8"
+groups = ["unit"]
+files = [
+    {file = "ops_scenario-7.0.5-py3-none-any.whl", hash = "sha256:9f06c1989a62181e4952cbfe2002cbaa1290dc1d203245a6b1ce2f96e132615b"},
+    {file = "ops_scenario-7.0.5.tar.gz", hash = "sha256:7ef7af6d026a29f93d54f394f6757170317a85cbfa755dab1303b94610a29b82"},
+]
+
+[package.dependencies]
+ops = ">=2.15,<3.0"
+PyYAML = ">=6.0.1"
+
+[package.extras]
+docs = ["canonical-sphinx-extensions", "furo", "linkify-it-py", "myst-parser", "pyspelling", "sphinx (>=8.0.0,<8.1.0)", "sphinx-autobuild", "sphinx-copybutton", "sphinx-design", "sphinx-notfound-page", "sphinx-tabs", "sphinxcontrib-jquery", "sphinxext-opengraph"]
 
 [[package]]
 name = "packaging"
@@ -2041,4 +2061,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "19027e9974581f3dff3b1c8cd8e513e7deda57cde9e117f151b8495076ce16ee"
+content-hash = "8bc6f0dbd15fd113cfd843fb73435e65960fd001763ec40c4b6dbf24e4d3e68b"
