@@ -9,7 +9,7 @@ concurrency:
 on:
   pull_request:
   schedule:
-    - cron: '53 0 * * *' # Daily at 00:53 UTC
+    - cron: "53 0 * * *" # Daily at 00:53 UTC
   # Triggered on push to branch "main" by .github/workflows/release.yaml
   workflow_call:
 
@@ -39,10 +39,17 @@ jobs:
         run: python3 -m pip install tox
       - name: Run tests
         run: tox run -e unit
-
   build:
     name: Build charms
-    uses: canonical/data-platform-workflows/.github/workflows/build_charms_with_cache.yaml@v7
+    uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v24.0.0
+    with:
+      cache: true
+      path-to-charm-directory: ${{ matrix.path }}
+    strategy:
+      matrix:
+        path:
+          - .
+          - tests/integration/app-charm
 
   integration-test:
     strategy:
