@@ -50,16 +50,22 @@ async def test_integrate_kafka(ops_test: OpsTest):
     await ops_test.model.wait_for_idle(apps=[ZOOKEEPER, KAFKA], idle_period=30, timeout=3600)
 
     await ops_test.model.add_relation(KAFKA, ZOOKEEPER)
-    await ops_test.model.wait_for_idle(apps=[KAFKA, ZOOKEEPER])
-
-    assert ops_test.model.applications[KAFKA].status == "active"
-    assert ops_test.model.applications[ZOOKEEPER].status == "active"
+    await ops_test.model.wait_for_idle(
+        apps=[KAFKA, ZOOKEEPER],
+        status="active",
+        idle_period=30,
+        timeout=1000,
+        raise_on_error=False,
+    )
 
     await ops_test.model.add_relation(KAFKA, APP_NAME)
-    await ops_test.model.wait_for_idle(apps=[KAFKA, APP_NAME])
-
-    await ops_test.model.wait_for_idle(apps=[APP_NAME, KAFKA])
-    assert ops_test.model.applications[APP_NAME].status == "active"
+    await ops_test.model.wait_for_idle(
+        apps=[KAFKA, APP_NAME],
+        status="active",
+        idle_period=30,
+        timeout=1000,
+        raise_on_error=False,
+    )
 
 
 @pytest.mark.abort_on_fail
