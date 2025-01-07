@@ -29,7 +29,8 @@ async def test_deploy_tls(ops_test: OpsTest, karapace_charm):
         ),
         ops_test.model.deploy(ZOOKEEPER, channel="3/stable", application_name=ZOOKEEPER),
         ops_test.model.deploy(KAFKA, channel="3/stable", application_name=KAFKA),
-        ops_test.model.deploy(TLS_NAME, channel="edge", config=tls_config),
+        # TODO(certs): Unpin once we have a new functioning tls lib
+        ops_test.model.deploy(TLS_NAME, channel="edge", revision=163, config=tls_config),
     )
     await ops_test.model.wait_for_idle(
         apps=[APP_NAME, ZOOKEEPER, KAFKA, TLS_NAME], idle_period=15, timeout=1800
