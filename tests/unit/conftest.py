@@ -5,8 +5,7 @@ from unittest.mock import patch
 
 import pytest
 from ops import pebble
-from scenario import Container, Context, PeerRelation, Relation
-from scenario.state import next_relation_id
+from ops.testing import Container, Context, PeerRelation, Relation
 from src.charm import KarapaceCharm
 
 
@@ -17,24 +16,18 @@ def ctx():
 
 @pytest.fixture()
 def peer_relation_no_data():
-    relation_id = next_relation_id(update=True)
-
     return PeerRelation(
         endpoint="cluster",
         interface="cluster",
-        relation_id=relation_id,
         local_app_data={},
     )
 
 
 @pytest.fixture()
 def peer_relation():
-    relation_id = next_relation_id(update=True)
-
     return PeerRelation(
         endpoint="cluster",
         interface="cluster",
-        relation_id=relation_id,
         local_app_data={"operator-password": "password"},
         local_unit_data={"private-address": "treebeard"},
     )
@@ -42,12 +35,9 @@ def peer_relation():
 
 @pytest.fixture()
 def peer_relation_with_provider():
-    relation_id = next_relation_id(update=True)
-
     return PeerRelation(
         endpoint="cluster",
         interface="cluster",
-        relation_id=relation_id,
         local_app_data={"operator-password": "password", "relation-5000": "provider-password"},
         local_unit_data={"private-address": "treebeard"},
     )
@@ -56,13 +46,10 @@ def peer_relation_with_provider():
 @pytest.fixture()
 def kafka_relation_no_data():
     """Provide fixture for the Kafka relation without data."""
-    relation_id = next_relation_id(update=True)
-
     return Relation(
         endpoint="kafka",
         interface="kafka_client",
         remote_app_name="kafka",
-        relation_id=relation_id,
         local_app_data={
             "topic": "_schemas",
             "extra-user-roles": "admin",
@@ -81,13 +68,10 @@ def kafka_relation_no_data():
 @pytest.fixture
 def kafka_relation():
     """Provide fixture for the Kafka relation."""
-    relation_id = next_relation_id(update=True)
-
     return Relation(
         endpoint="kafka",
         interface="kafka_client",
         remote_app_name="kafka",
-        relation_id=relation_id,
         local_app_data={
             "topic": "_schemas",
             "extra-user-roles": "admin",
@@ -106,13 +90,10 @@ def kafka_relation():
 @pytest.fixture()
 def kafka_relation_tls():
     """Provide fixture for the Kafka relation."""
-    relation_id = next_relation_id(update=True)
-
     return Relation(
         endpoint="kafka",
         interface="kafka_client",
         remote_app_name="kafka",
-        relation_id=relation_id,
         local_app_data={
             "topic": "_schemas",
             "extra-user-roles": "admin",
@@ -132,13 +113,10 @@ def kafka_relation_tls():
 @pytest.fixture()
 def tls_relation():
     """Provide a fixture for TLS relation."""
-    relation_id = next_relation_id(update=True)
-
     return Relation(
         endpoint="certificates",
         interface="tls-certificates",
         remote_app_name="tls-certificates-operator",
-        relation_id=relation_id,
         local_app_data={},
         remote_app_data={},
     )
@@ -151,7 +129,7 @@ def requirer_relation():
         endpoint="karapace",
         interface="karapace_client",
         remote_app_name="requirer-app",
-        relation_id=5000,
+        id=5000,
         remote_app_data={"subject": "test-subject", "extra-user-roles": "user"},
     )
 
@@ -183,7 +161,7 @@ def karapace_container():
         name="karapace",
         can_connect=True,
         layers={"base": layer},
-        service_status={"karapace": pebble.ServiceStatus.ACTIVE},
+        service_statuses={"karapace": pebble.ServiceStatus.ACTIVE},
     )
 
 
