@@ -20,11 +20,8 @@ target-version = ["py310"]
 profile = "black"
 
 [tool.poetry]
-name = "karapace-k8s-operator"
-version = "1.0"
-description = "karapace-k8s-operator"
-authors = []
 package-mode = false
+requires-poetry = ">=2.0.0"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
