@@ -41,7 +41,7 @@ jobs:
         run: tox run -e unit
   build:
     name: Build charms
-    uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v26.0.0
+    uses: canonical/data-platform-workflows/.github/workflows/build_charm.yaml@v29.0.0
     with:
       cache: true
       charmcraft-snap-channel: latest/candidate  # TODO: remove after charmcraft 3.3 stable release
