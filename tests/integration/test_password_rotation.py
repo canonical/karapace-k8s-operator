@@ -29,8 +29,8 @@ async def test_build_and_deploy(ops_test: OpsTest, karapace_charm):
             num_units=1,
             resources={"karapace-image": KARAPACE_CONTAINER},
         ),
-        ops_test.model.deploy(ZOOKEEPER, channel="3/edge", application_name=ZOOKEEPER),
-        ops_test.model.deploy(KAFKA, channel="3/edge", application_name=KAFKA),
+        ops_test.model.deploy(ZOOKEEPER, channel="3/stable", application_name=ZOOKEEPER),
+        ops_test.model.deploy(KAFKA, channel="3/stable", application_name=KAFKA),
     )
 
     await ops_test.model.add_relation(KAFKA, ZOOKEEPER)
@@ -43,7 +43,9 @@ async def test_build_and_deploy(ops_test: OpsTest, karapace_charm):
     )
 
     await ops_test.model.add_relation(KAFKA, APP_NAME)
-    await ops_test.model.wait_for_idle(apps=[KAFKA, APP_NAME], idle_period=30, timeout=1800)
+    await ops_test.model.wait_for_idle(
+        apps=[KAFKA, APP_NAME], idle_period=30, timeout=1800
+    )
 
     assert ops_test.model.applications[APP_NAME].status == "active"
 
