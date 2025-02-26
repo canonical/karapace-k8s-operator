@@ -43,9 +43,7 @@ async def test_build_and_deploy(ops_test: OpsTest, karapace_charm):
     )
 
     await ops_test.model.add_relation(KAFKA, APP_NAME)
-    await ops_test.model.wait_for_idle(
-        apps=[KAFKA, APP_NAME], idle_period=30, timeout=1800
-    )
+    await ops_test.model.wait_for_idle(apps=[KAFKA, APP_NAME], idle_period=30, timeout=1800)
 
     assert ops_test.model.applications[APP_NAME].status == "active"
 
