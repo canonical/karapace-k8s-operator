@@ -13,7 +13,6 @@ from ops.model import ActiveStatus, BlockedStatus, MaintenanceStatus, StatusBase
 CHARM_KEY = "karapace"
 CONTAINER = "karapace"
 PORT = 8081
-REPLICATION_PORT = 8082
 
 PEER = "cluster"
 KARAPACE_REL = "karapace"
@@ -23,6 +22,7 @@ KAFKA_CONSUMER_GROUP = "schema-registry"
 
 ADMIN_USER = "operator"
 INTERNAL_USERS = [ADMIN_USER]
+SALT = "placeholder"
 
 SECRETS_APP = ["operator-password"]
 SECRETS_UNIT = ["ca-cert", "csr", "certificate", "private-key"]
