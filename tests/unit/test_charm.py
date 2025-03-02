@@ -6,6 +6,7 @@ import json
 from typing import cast
 from unittest.mock import patch
 
+import pytest
 from ops.testing import Context, State
 from src.charm import KarapaceCharm
 from src.literals import Status
@@ -210,6 +211,7 @@ def test_update_status_succeeds(
     assert state_out.unit_status == Status.ACTIVE.value.status
 
 
+@pytest.mark.nopatched_disable_service_links
 def test_install_disables_service_links(
     ctx: Context, karapace_container, peer_relation, kafka_relation
 ):
@@ -219,4 +221,4 @@ def test_install_disables_service_links(
     with patch("managers.k8s.K8sManager.disable_service_links") as patched_disable_service_links:
         _ = ctx.run(ctx.on.install(), state_in)
 
-    assert not patched_disable_service_links.call_count
+    assert patched_disable_service_links.call_count
