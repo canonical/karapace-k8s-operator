@@ -26,6 +26,7 @@ async def test_deploy_tls(ops_test: OpsTest, karapace_charm):
             application_name=APP_NAME,
             num_units=1,
             resources={"karapace-image": KARAPACE_CONTAINER},
+            trust=True,
         ),
         ops_test.model.deploy(ZOOKEEPER, channel="3/stable", application_name=ZOOKEEPER),
         ops_test.model.deploy(KAFKA, channel="3/stable", application_name=KAFKA),

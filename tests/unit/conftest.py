@@ -187,3 +187,14 @@ def patched_workload_read():
 def patched_exec():
     with patch("workload.KarapaceWorkload.exec") as patched_exec:
         yield patched_exec
+
+
+@pytest.fixture(autouse=True)
+def patched_disable_service_links(request):
+    if "nopatched_disable_service_links" in request.keywords:
+        yield
+    else:
+        with patch(
+            "managers.k8s.K8sManager.disable_service_links"
+        ) as patched_disable_service_links:
+            yield patched_disable_service_links
