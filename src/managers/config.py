@@ -77,6 +77,7 @@ class ConfigManager:
             # Auth options
             "registry_authfile": self.workload.paths.registry_authfile,
             "registry_ca": None,
+            "statsd_host": None,
         }
 
     def generate_config(self) -> None:
