@@ -37,7 +37,7 @@ $ juju integrate kafka-k8s zookeeper-k8s
 To watch the process, `juju status` can be used. Once all the units show as `active|idle` Karapace can be connected with Kafka:
 
 ```shell
-$ juju deploy karapace-k8s --channel latest/edge
+$ juju deploy karapace-k8s --channel latest/edge --trust
 $ juju integrate karapace-k8s kafka-k8s
 ```
 
