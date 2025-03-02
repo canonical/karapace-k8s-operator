@@ -87,6 +87,11 @@ class KarapaceServer(RelationState):
         """
         return int(self.unit.name.split("/")[1])
 
+    @property
+    def pod_name(self) -> str:
+        """The K8s Pod name for the given unit."""
+        return self.unit.name.replace("/", "-")
+
     # -- Cluster Init --
 
     @property

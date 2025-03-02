@@ -208,3 +208,15 @@ def test_update_status_succeeds(
         state_out = ctx.run(ctx.on.update_status(), state_in)
 
     assert state_out.unit_status == Status.ACTIVE.value.status
+
+
+def test_install_disables_service_links(
+    ctx: Context, karapace_container, peer_relation, kafka_relation
+):
+    state_in = State(
+        containers=[karapace_container], relations=[peer_relation, kafka_relation], leader=True
+    )
+    with patch("managers.k8s.K8sManager.disable_service_links") as patched_disable_service_links:
+        _ = ctx.run(ctx.on.install(), state_in)
+
+    assert not patched_disable_service_links.call_count

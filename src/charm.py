@@ -18,6 +18,7 @@ from events.tls import TLSHandler
 from literals import CHARM_KEY, CONTAINER, DebugLevel, Status, Substrate
 from managers.auth import KarapaceAuth
 from managers.config import ConfigManager
+from managers.k8s import K8sManager
 from managers.kafka import KafkaManager
 from managers.tls import TLSManager
 from workload import KarapaceWorkload
@@ -51,6 +52,9 @@ class KarapaceCharm(TypedCharmBase[CharmConfig]):
         self.auth_manager = KarapaceAuth(context=self.context, workload=self.workload)
         self.tls_manager = TLSManager(context=self.context, workload=self.workload)
         self.kafka_manager = KafkaManager(context=self.context, workload=self.workload)
+        self.k8s_manager = K8sManager(
+            pod_name=self.context.server.pod_name, namespace=self.model.name
+        )
 
         # CORE EVENTS
 
@@ -68,6 +72,11 @@ class KarapaceCharm(TypedCharmBase[CharmConfig]):
             return
 
         self.unit.set_workload_version(self.workload.get_version())
+
+        # Karapace service needs certain env vars, specifically KARAPACE_PORT
+        # K8s service links would override these env vars, if the app name is `karapace`
+        # We probably don't need service links, and can rely on DNS
+        self.k8s_manager.disable_service_links()
 
     def _on_karapace_pebble_ready(self, event: ops.EventBase) -> None:
         """Handle pebble ready event."""
