@@ -50,6 +50,10 @@ async def test_build_and_deploy(ops_test: OpsTest, karapace_charm, app_charm):
     )
 
     await ops_test.model.add_relation(KAFKA, APP_NAME)
+
+    async with ops_test.fast_forward(fast_interval="60s"):
+        await asyncio.sleep(180)
+
     await ops_test.model.wait_for_idle(
         apps=[KAFKA, APP_NAME, DUMMY_NAME], idle_period=30, timeout=1800
     )
