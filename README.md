@@ -23,10 +23,10 @@ As Karapace requires a running Kafka cluster, this operator makes use of the [Ka
 
 ### Basic usage
 
-Before using Karapace, a Kafka cluster needs to be deployed. This example cluster will be deployed with 5 units of ZooKeeper and 3 of Kafka. A smaller cluster can be used for testing purposes. The Kafka and ZooKeeper operators can both be deployed as follows:
+Before using Karapace, a Kafka cluster needs to be deployed. The Kafka and ZooKeeper operators can both be deployed as follows:
 ```shell
-$ juju deploy zookeeper-k8s --channel latest/edge -n 5
-$ juju deploy kafka-k8s --channel latest/edge -n 3 --trust
+$ juju deploy zookeeper-k8s --channel latest/edge -n 3
+$ juju deploy kafka-k8s --channel latest/edge --trust
 ```
 
 After this, it is necessary to connect them:
