@@ -104,7 +104,8 @@ class KarapaceWorkload(WorkloadBase):
     @property
     def _karapace_layer(self) -> Layer:
         """Returns a Pebble configuration layer for Karapace."""
-        command = f"karapace {self.paths.karapace_config}"
+        environment = self.map_env(self.read("/etc/environment"))
+        command = "python3 -m karapace"
 
         layer_config: LayerDict = {
             "summary": "karapace layer",
@@ -117,6 +118,7 @@ class KarapaceWorkload(WorkloadBase):
                     "startup": "enabled",
                     "user": USER,
                     "group": GROUP,
+                    "environment": environment,
                 }
             },
         }

@@ -25,7 +25,7 @@ resources:
   karapace-image:
     type: oci-image
     description: OCI image for Karapace
-    upstream-source: ghcr.io/canonical/charmed-karapace@sha256:f4eac484c675ab257f570b19488f631310fafb8074a2a59e7c6d3172b2792360
+    upstream-source: ghcr.io/canonical/charmed-karapace@sha256:c83d9e312aebdab85e1e0aab72f43c4d65d3e6a9cc7fe397699bd636bf9c51fc
 
 containers:
   karapace:
