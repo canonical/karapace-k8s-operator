@@ -1,17 +1,18 @@
 resource "juju_application" "karapace" {
   model = var.model
   name  = var.app_name
-  
+
   charm {
     name     = "karapace-k8s"
     channel  = var.channel
     revision = var.revision
     base     = var.base
   }
-  
+
   units       = var.units
   constraints = var.constraints
   config      = var.config
+  trust       = true
 }
 
 # Karapace client offer
