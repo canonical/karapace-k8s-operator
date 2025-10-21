@@ -17,7 +17,6 @@ output "provides_endpoints" {
   value = [
     "karapace-client",
     "cos-agent",
-    "certificates"
   ]
 }
 
