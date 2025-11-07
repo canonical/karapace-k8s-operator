@@ -11,7 +11,7 @@ from helpers import (
     APP_NAME,
     CA_FILE,
     KAFKA,
-    SERIES,
+    KARAPACE_CONTAINER,
     ZOOKEEPER,
     get_address,
     get_admin_credentials,
