@@ -12,6 +12,7 @@ from pytest_operator.plugin import OpsTest
 logger = logging.getLogger(__name__)
 
 TLS_NAME = "self-signed-certificates"
+TLS_CHANNEL = "1/stable"
 CERTS_NAME = "tls-certificates-operator"
 
 
@@ -32,7 +33,7 @@ async def test_deploy_tls(ops_test: OpsTest, karapace_charm):
             ZOOKEEPER, channel="3/stable", application_name=ZOOKEEPER, trust=True
         ),
         ops_test.model.deploy(KAFKA, channel="3/stable", application_name=KAFKA, trust=True),
-        ops_test.model.deploy(TLS_NAME, config=tls_config),
+        ops_test.model.deploy(TLS_NAME, channel=TLS_CHANNEL, config=tls_config),
     )
     await ops_test.model.wait_for_idle(
         apps=[APP_NAME, ZOOKEEPER, KAFKA, TLS_NAME], idle_period=30, timeout=1800
