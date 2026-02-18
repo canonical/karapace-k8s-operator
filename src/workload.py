@@ -37,7 +37,7 @@ class KarapaceWorkload(WorkloadBase):
 
     @override
     def restart(self) -> None:
-        self.container.restart(self.CONTAINER_SERVICE)
+        self.start()
 
     @override
     def read(self, path: str) -> list[str]:

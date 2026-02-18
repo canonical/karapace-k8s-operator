@@ -15,7 +15,7 @@ from events.kafka import KafkaHandler
 from events.password_actions import PasswordActionEvents
 from events.provider import KarapaceHandler
 from events.tls import TLSHandler
-from literals import CHARM_KEY, CONTAINER, DebugLevel, Status, Substrate
+from literals import CHARM_KEY, CONTAINER, PEER, DebugLevel, Status, Substrate
 from managers.auth import KarapaceAuth
 from managers.config import ConfigManager
 from managers.k8s import K8sManager
@@ -64,6 +64,7 @@ class KarapaceCharm(TypedCharmBase[CharmConfig]):
         )
         self.framework.observe(self.on.config_changed, self._on_config_changed)
         self.framework.observe(self.on.update_status, self._on_update_status)
+        self.framework.observe(self.on[PEER].relation_changed, self._on_config_changed)
 
     def _on_install(self, event: ops.InstallEvent):
         """Handle install event."""
