@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 # Copyright 2024 Canonical Ltd.
 # See LICENSE file for licensing details.
-
-import asyncio
 import logging
+from time import sleep
 
-import pytest
 from helpers import (
     APP_NAME,
     KAFKA,
@@ -14,28 +12,26 @@ from helpers import (
     get_admin_credentials,
     set_password,
 )
-from pytest_operator.plugin import OpsTest
+from jubilant_adapters import JujuFixture, gather
 
 logger = logging.getLogger(__name__)
 
 
-@pytest.mark.abort_on_fail
-@pytest.mark.skip_if_deployed
-async def test_build_and_deploy(ops_test: OpsTest, karapace_charm):
-    await asyncio.gather(
-        ops_test.model.deploy(
+def test_build_and_deploy(juju: JujuFixture, karapace_charm):
+    gather(
+        juju.ext.model.deploy(
             karapace_charm,
             application_name=APP_NAME,
             num_units=1,
             resources={"karapace-image": KARAPACE_CONTAINER},
             trust=True,
         ),
-        ops_test.model.deploy(ZOOKEEPER, channel="3/stable", application_name=ZOOKEEPER),
-        ops_test.model.deploy(KAFKA, channel="3/stable", application_name=KAFKA),
+        juju.ext.model.deploy(ZOOKEEPER, channel="3/stable", application_name=ZOOKEEPER),
+        juju.ext.model.deploy(KAFKA, channel="3/stable", application_name=KAFKA),
     )
 
-    await ops_test.model.add_relation(KAFKA, ZOOKEEPER)
-    await ops_test.model.wait_for_idle(
+    juju.ext.model.add_relation(KAFKA, ZOOKEEPER)
+    juju.ext.model.wait_for_idle(
         apps=[KAFKA, ZOOKEEPER],
         status="active",
         idle_period=30,
@@ -43,25 +39,25 @@ async def test_build_and_deploy(ops_test: OpsTest, karapace_charm):
         raise_on_error=False,
     )
 
-    await ops_test.model.add_relation(KAFKA, APP_NAME)
+    juju.ext.model.add_relation(KAFKA, APP_NAME)
 
-    async with ops_test.fast_forward(fast_interval="60s"):
-        await asyncio.sleep(180)
+    with juju.ext.fast_forward(fast_interval="60s"):
+        sleep(180)
 
-    await ops_test.model.wait_for_idle(apps=[KAFKA, APP_NAME], idle_period=30, timeout=1800)
+    juju.ext.model.wait_for_idle(apps=[KAFKA, APP_NAME], idle_period=30, timeout=1800)
 
-    assert ops_test.model.applications[APP_NAME].status == "active"
+    assert juju.ext.model.applications[APP_NAME].status == "active"
 
 
-async def test_password_rotation(ops_test: OpsTest):
+def test_password_rotation(juju: JujuFixture):
     """Check that password stored on Karapace has changed after a password rotation."""
-    initial_operator_password = await get_admin_credentials(ops_test)
+    initial_operator_password = get_admin_credentials(juju)
 
-    result = await set_password(ops_test, username="operator", num_unit=0)
+    result = set_password(juju, username="operator", num_unit=0)
     assert "operator-password" in result.keys()
 
-    await ops_test.model.wait_for_idle(apps=[APP_NAME])
+    juju.ext.model.wait_for_idle(apps=[APP_NAME])
 
-    new_operator_user = await get_admin_credentials(ops_test)
+    new_operator_user = get_admin_credentials(juju)
 
     assert initial_operator_password != new_operator_user
