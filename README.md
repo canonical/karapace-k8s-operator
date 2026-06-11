@@ -102,6 +102,55 @@ juju remove-relation zookeeper-k8s tls-certificates-operator
 
 Note: The TLS settings here are for self-signed-certificates which are not recommended for production clusters, the `tls-certificates-operator` charm offers a variety of configurations, read more on the TLS charm [here](https://charmhub.io/tls-certificates-operator)
 
+## Monitoring
+
+The Charmed Karapace K8s Operator comes with an exporter.
+The metrics can be queried by accessing the `http://<unit-ip>:8082/metrics` endpoints.
+
+Additionally, the charm provides integration with the [Canonical Observability Stack](https://charmhub.io/topics/canonical-observability-stack).
+
+Deploy `cos-lite` bundle in a Kubernetes environment. This can be done by following the [deployment tutorial](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s). It is needed to offer the endpoints of the COS relations. The [offers-overlay](https://github.com/canonical/cos-lite-bundle/blob/main/overlays/offers-overlay.yaml) can be used, and this step is shown on the COS tutorial.
+
+Once COS is deployed, we can find the offers from the Karapace model. To do that, switch back to that model:
+
+```shell
+juju switch <karapace_model_name>
+```
+
+And use the `find-offers` command:
+
+```shell
+juju find-offers <k8s_controller_name>:
+```
+
+The following or similar output will appear, if `micro` is the k8s controller name and `cos` the model where `cos-lite` has been deployed:
+
+```
+Store  URL                   Access  Interfaces                         
+micro  admin/cos.grafana     admin   grafana_dashboard:grafana-dashboard
+micro  admin/cos.prometheus  admin   prometheus_scrape:metrics-endpoint
+. . .
+```
+
+Now, deploy `Opentelemetry Collector` and integrate it with Karapace:
+
+```shell
+juju deploy opentelemetry-collector-k8s --trust
+
+juju integrate karapace-k8s:metrics-endpoint opentelemetry-collector-k8s
+juju integrate karapace-k8s:grafana-dashboard opentelemetry-collector-k8s
+juju integrate karapace-k8s:logging opentelemetry-collector-k8s
+```
+
+Finally, integrate `opentelemetry-collector` with COS offers:
+
+```shell
+juju integrate micro:admin/cos.prometheus opentelemetry-collector-k8s
+juju integrate micro:admin/cos.grafana opentelemetry-collector-k8s
+juju integrate micro:admin/cos.loki opentelemetry-collector-k8s
+```
+
+After this is complete, Grafana will show a new dashboard: `Karapace`.
 
 ## Contributing
 
