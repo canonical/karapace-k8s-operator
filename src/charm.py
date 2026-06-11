@@ -66,6 +66,22 @@ class KarapaceCharm(TypedCharmBase[CharmConfig]):
         self.framework.observe(self.on.update_status, self._on_update_status)
         self.framework.observe(self.on[PEER].relation_changed, self._on_config_changed)
 
+        # O11y
+        # self.metrics_endpoint = MetricsEndpointProvider(
+        #     self,
+        #     jobs=[{"static_configs": [{"targets": [f"*:{PORT}",]}]}],
+        #     alert_rules_path=METRICS_RULES_DIR,
+        # )
+        # self.grafana_dashboards = GrafanaDashboardProvider(self)
+        # self.loki_push = LogProxyConsumer(
+        #     self,
+        #     log_files=[
+        #         f"{self.workload.paths.logs_dir}/connect.log",
+        #     ],
+        #     relation_name="logging",
+        #     container_name=CONTAINER,
+        # )
+
     def _on_install(self, event: ops.InstallEvent):
         """Handle install event."""
         if not self.workload.container_can_connect():
