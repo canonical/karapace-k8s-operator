@@ -9,7 +9,7 @@ from subprocess import PIPE, check_output
 import pytest
 from helpers import (
     APP_NAME,
-    DEFAULT_CONSTRAINTS,
+    ARCHITECTURE,
     DUMMY_NAME,
     KAFKA,
     KAFKA_CHANNEL,
@@ -28,6 +28,7 @@ logger = logging.getLogger(__name__)
 @pytest.mark.abort_on_fail
 @pytest.mark.skip_if_deployed
 async def test_build_and_deploy(ops_test: OpsTest, karapace_charm, app_charm):
+    await ops_test.run("juju", "set-model-constraints", f"arch={ARCHITECTURE}")
     await asyncio.gather(
         ops_test.model.deploy(
             karapace_charm,
@@ -35,21 +36,18 @@ async def test_build_and_deploy(ops_test: OpsTest, karapace_charm, app_charm):
             num_units=1,
             resources={"karapace-image": KARAPACE_CONTAINER},
             trust=True,
-            constraints=DEFAULT_CONSTRAINTS,
         ),
         ops_test.model.deploy(
             KAFKA,
             channel=KAFKA_CHANNEL,
             application_name=KAFKA,
             config={"roles": "broker,controller"},
-            constraints=DEFAULT_CONSTRAINTS,
             trust=True,
         ),
         ops_test.model.deploy(
             app_charm,
             application_name=DUMMY_NAME,
             num_units=1,
-            constraints=DEFAULT_CONSTRAINTS,
         ),
     )
 

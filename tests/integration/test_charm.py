@@ -8,7 +8,7 @@ from subprocess import PIPE, check_output
 import pytest
 from helpers import (
     APP_NAME,
-    DEFAULT_CONSTRAINTS,
+    ARCHITECTURE,
     KAFKA,
     KAFKA_CHANNEL,
     KARAPACE_CONTAINER,
@@ -30,13 +30,13 @@ async def test_build_and_deploy(ops_test: OpsTest, karapace_charm):
 
     Assert on the unit status before any relations/configurations take place.
     """
+    await ops_test.run("juju", "set-model-constraints", f"arch={ARCHITECTURE}")
     await ops_test.model.deploy(
         karapace_charm,
         application_name=APP_NAME,
         num_units=1,
         resources={"karapace-image": KARAPACE_CONTAINER},
         trust=True,
-        constraints=DEFAULT_CONSTRAINTS,
     )
     await ops_test.model.wait_for_idle(apps=[APP_NAME], idle_period=30, timeout=3600)
     assert ops_test.model.applications[APP_NAME].status == "blocked"
@@ -50,7 +50,6 @@ async def test_integrate_kafka(ops_test: OpsTest):
         channel=KAFKA_CHANNEL,
         application_name=KAFKA,
         config={"roles": "broker,controller"},
-        constraints=DEFAULT_CONSTRAINTS,
         trust=True,
     )
     await ops_test.model.wait_for_idle(
