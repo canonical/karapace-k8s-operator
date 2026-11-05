@@ -10,9 +10,10 @@ import requests
 from helpers import (
     APP_NAME,
     CA_FILE,
+    DEFAULT_CONSTRAINTS,
     KAFKA,
+    KAFKA_CHANNEL,
     KARAPACE_CONTAINER,
-    ZOOKEEPER,
     get_address,
     get_admin_credentials,
     set_tls_private_key,
@@ -39,31 +40,38 @@ async def test_deploy_tls(ops_test: OpsTest, karapace_charm):
             num_units=1,
             resources={"karapace-image": KARAPACE_CONTAINER},
             trust=True,
+            constraints=DEFAULT_CONSTRAINTS,
         ),
         ops_test.model.deploy(
-            ZOOKEEPER, channel="3/stable", application_name=ZOOKEEPER, trust=True
+            KAFKA,
+            channel=KAFKA_CHANNEL,
+            application_name=KAFKA,
+            config={"roles": "broker,controller"},
+            constraints=DEFAULT_CONSTRAINTS,
+            trust=True,
         ),
-        ops_test.model.deploy(KAFKA, channel="3/stable", application_name=KAFKA, trust=True),
-        ops_test.model.deploy(TLS_NAME, channel=TLS_CHANNEL, config=tls_config),
+        ops_test.model.deploy(
+            TLS_NAME,
+            channel=TLS_CHANNEL,
+            config=tls_config,
+            constraints=DEFAULT_CONSTRAINTS,
+        ),
     )
     await ops_test.model.wait_for_idle(
-        apps=[APP_NAME, ZOOKEEPER, KAFKA, TLS_NAME],
+        apps=[APP_NAME, KAFKA, TLS_NAME],
         idle_period=30,
         timeout=1800,
         raise_on_error=False,
     )
 
     assert ops_test.model.applications[APP_NAME].status == "blocked"
-    assert ops_test.model.applications[KAFKA].status == "blocked"
-    assert ops_test.model.applications[ZOOKEEPER].status == "active"
+    assert ops_test.model.applications[KAFKA].status == "active"
     assert ops_test.model.applications[TLS_NAME].status == "active"
 
-    # Relate Zookeeper & Kafka to TLS
-    await ops_test.model.add_relation(KAFKA, ZOOKEEPER)
-    await ops_test.model.add_relation(TLS_NAME, ZOOKEEPER)
+    # Relate Kafka to TLS
     await ops_test.model.add_relation(TLS_NAME, f"{KAFKA}:certificates")
     await ops_test.model.wait_for_idle(
-        apps=[TLS_NAME, ZOOKEEPER, KAFKA],
+        apps=[TLS_NAME, KAFKA],
         status="active",
         idle_period=30,
         timeout=1000,

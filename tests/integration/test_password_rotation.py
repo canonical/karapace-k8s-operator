@@ -8,9 +8,10 @@ import logging
 import pytest
 from helpers import (
     APP_NAME,
+    DEFAULT_CONSTRAINTS,
     KAFKA,
+    KAFKA_CHANNEL,
     KARAPACE_CONTAINER,
-    ZOOKEEPER,
     get_admin_credentials,
     set_password,
 )
@@ -29,14 +30,20 @@ async def test_build_and_deploy(ops_test: OpsTest, karapace_charm):
             num_units=1,
             resources={"karapace-image": KARAPACE_CONTAINER},
             trust=True,
+            constraints=DEFAULT_CONSTRAINTS,
         ),
-        ops_test.model.deploy(ZOOKEEPER, channel="3/stable", application_name=ZOOKEEPER),
-        ops_test.model.deploy(KAFKA, channel="3/stable", application_name=KAFKA),
+        ops_test.model.deploy(
+            KAFKA,
+            channel=KAFKA_CHANNEL,
+            application_name=KAFKA,
+            config={"roles": "broker,controller"},
+            constraints=DEFAULT_CONSTRAINTS,
+            trust=True,
+        ),
     )
 
-    await ops_test.model.add_relation(KAFKA, ZOOKEEPER)
     await ops_test.model.wait_for_idle(
-        apps=[KAFKA, ZOOKEEPER],
+        apps=[KAFKA],
         status="active",
         idle_period=30,
         timeout=1000,

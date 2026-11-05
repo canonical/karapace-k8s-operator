@@ -3,6 +3,7 @@
 # See LICENSE file for licensing details.
 
 import logging
+import platform
 import socket
 from contextlib import closing
 from pathlib import Path
@@ -19,8 +20,10 @@ METADATA = yaml.safe_load(Path("./metadata.yaml").read_text())
 APP_NAME = METADATA["name"]
 KARAPACE_CONTAINER = METADATA["resources"]["karapace-image"]["upstream-source"]
 
+ARCHITECTURE = "arm64" if platform.machine() == "aarch64" else "amd64"
+DEFAULT_CONSTRAINTS = {"arch": ARCHITECTURE}
 KAFKA = "kafka-k8s"
-ZOOKEEPER = "zookeeper-k8s"
+KAFKA_CHANNEL = "4/edge"  # no arm release available on the stable yet.
 TLS_CERTIFICATES_OPERATOR = "tls-certificates-operator"
 DUMMY_NAME = "app"
 
