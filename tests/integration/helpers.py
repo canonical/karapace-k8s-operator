@@ -21,7 +21,7 @@ APP_NAME = METADATA["name"]
 KARAPACE_CONTAINER = METADATA["resources"]["karapace-image"]["upstream-source"]
 
 ARCHITECTURE = "arm64" if platform.machine() == "aarch64" else "amd64"
-DEFAULT_CONSTRAINTS = {"arch": ARCHITECTURE}
+DEFAULT_CONSTRAINTS = f"arch={ARCHITECTURE}"
 KAFKA = "kafka-k8s"
 KAFKA_CHANNEL = "4/edge"  # no arm release available on the stable yet.
 TLS_CERTIFICATES_OPERATOR = "tls-certificates-operator"
