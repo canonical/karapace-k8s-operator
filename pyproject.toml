@@ -30,6 +30,7 @@ tenacity = ">=8.0.1"
 typing-extensions = "^4.12.2"
 sentry-sdk = ">2"
 lightkube = "0.15.0"
+charmlibs-pathops = "^1.0.0"
 
 [tool.poetry.group.charm-libs.dependencies]
 # data_platform_libs/v0/data_interfaces.py

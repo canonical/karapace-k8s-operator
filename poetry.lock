@@ -66,7 +66,7 @@ description = "Base class for creating enumerated constants that are also subcla
 optional = false
 python-versions = ">=3.8.6,<3.11"
 groups = ["integration"]
-markers = "python_version == \"3.10\""
+markers = "python_version < \"3.11\""
 files = [
     {file = "backports_strenum-1.3.1-py3-none-any.whl", hash = "sha256:cdcfe36dc897e2615dc793b7d3097f54d359918fc448754a517e6f23044ccf83"},
     {file = "backports_strenum-1.3.1.tar.gz", hash = "sha256:77c52407342898497714f0596e86188bb7084f89063226f4ba66863482f42414"},
@@ -276,6 +276,21 @@ markers = {charm-libs = "platform_python_implementation != \"PyPy\""}
 
 [package.dependencies]
 pycparser = "*"
+
+[[package]]
+name = "charmlibs-pathops"
+version = "1.4.1"
+description = "A pathlib-like interface for Juju K8s charms to interact with files in their workload container."
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "charmlibs_pathops-1.4.1-py3-none-any.whl", hash = "sha256:ceb960fbc1ac58b337cb7fcb561d6a56a1952d4f6c7a009cc6f754aaaa6964d5"},
+    {file = "charmlibs_pathops-1.4.1.tar.gz", hash = "sha256:443fa7f6a9b818c0030a674e7fe8622ea2a4d253c3820b4e414bfa84dd221f12"},
+]
+
+[package.dependencies]
+ops = ">=2.19,<4"
 
 [[package]]
 name = "charset-normalizer"
@@ -600,7 +615,7 @@ description = "Backport of PEP 654 (exception groups)"
 optional = false
 python-versions = ">=3.7"
 groups = ["main", "integration", "unit"]
-markers = "python_version == \"3.10\""
+markers = "python_version < \"3.11\""
 files = [
     {file = "exceptiongroup-1.2.2-py3-none-any.whl", hash = "sha256:3111b9d131c238bec2f8f516e123e14ba243563fb135d3fe885990585aa7795b"},
     {file = "exceptiongroup-1.2.2.tar.gz", hash = "sha256:47c2edf7c6738fafb49fd34290706d1a1a2f4d1c6df275526b62cbb4aa5393cc"},
@@ -2306,4 +2321,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "1274f361cdc53ba20fea96a9ca164ecf23aa4c448b795dd7c91e4b0a556c5d60"
+content-hash = "73408f27b9d2b85f96c424e67071a79e7e816dbb1f797900a3a2d0832f64de54"

@@ -7,6 +7,7 @@
 import logging
 import re
 
+from charmlibs import pathops
 from ops import Container
 from ops.pebble import ExecError, Layer, LayerDict
 from tenacity import retry, retry_if_result, stop_after_attempt, wait_fixed
@@ -25,6 +26,7 @@ class KarapaceWorkload(WorkloadBase):
 
     def __init__(self, container: Container) -> None:
         self.container = container
+        self.root = pathops.ContainerPath("/", container=self.container)
 
     @override
     def start(self) -> None:

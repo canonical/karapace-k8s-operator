@@ -9,6 +9,8 @@ import string
 from abc import ABC, abstractmethod
 from typing import Iterable
 
+from charmlibs import pathops
+
 from literals import PATHS
 
 
@@ -55,6 +57,7 @@ class WorkloadBase(ABC):
     """Base interface for common workload operations."""
 
     paths = KarapacePaths()
+    root: pathops.PathProtocol
 
     @abstractmethod
     def start(self) -> None:
