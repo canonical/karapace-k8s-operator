@@ -8,7 +8,7 @@ from typing import cast
 from unittest.mock import patch
 
 import yaml
-from ops.testing import Context, State
+from ops.testing import Container, Context, Mount, State
 from src.charm import KarapaceCharm
 from src.literals import SUBSTRATE, Status
 
@@ -59,3 +59,32 @@ def test_sans_config(
                     "karapace-k8s-0.karapace-k8s-endpoints",
                     sock_dns,
                 ]
+
+
+def test_tls_relation_broken_removes_stores(
+    ctx: Context, karapace_container, peer_relation, kafka_relation_tls, tls_relation, tmp_path
+):
+    """TLS keys/certs are removed on relation-broken without relying on a shell glob."""
+    conf_dir = tmp_path / "karapace"
+    conf_dir.mkdir()
+    tls_files = [conf_dir / name for name in ("cacert.pem", "cert.pem", "private.key")]
+    other_file = conf_dir / "karapace.config.json"
+    for f in [*tls_files, other_file]:
+        f.write_text("content")
+
+    container = Container(
+        name=karapace_container.name,
+        can_connect=True,
+        layers=karapace_container.layers,
+        service_statuses=karapace_container.service_statuses,
+        mounts={"etc": Mount(location="/etc", source=tmp_path)},
+    )
+    state_in = State(
+        containers=[container],
+        relations=[peer_relation, kafka_relation_tls, tls_relation],
+        leader=True,
+    )
+    ctx.run(ctx.on.relation_broken(tls_relation), state_in)
+
+    assert not any(f.exists() for f in tls_files)
+    assert other_file.exists()  # non-TLS files are kept
